@@ -10,18 +10,22 @@ export class AppController {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Book Library</title>
+    <title>Book Library Dashboard</title>
     <style>
       :root {
-        --bg: #efede3;
-        --ink: #242220;
-        --muted: #6a655e;
-        --paper: #faf8f0;
-        --card: #fdfcf8;
-        --line: #d9d2c5;
-        --accent: #1f6b66;
-        --accent-2: #2f8f88;
-        --danger: #b55151;
+        --bg: #f2f4f9;
+        --surface: #ffffff;
+        --surface-2: #f8f9fc;
+        --ink: #1c2440;
+        --muted: #6f7a9a;
+        --line: #e6eaf4;
+        --brand: #1f7ae0;
+        --brand-2: #155fba;
+        --accent: #13b4a7;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --shadow: 0 14px 30px rgba(18, 30, 60, 0.08);
+        --radius: 14px;
       }
 
       * {
@@ -30,281 +34,385 @@ export class AppController {
 
       body {
         margin: 0;
-        font-family: Georgia, "Times New Roman", serif;
+        background: var(--bg);
         color: var(--ink);
-        background: radial-gradient(circle at 10% 0%, #f8f6ef 0%, var(--bg) 55%);
+        font-family: "Avenir Next", "Segoe UI", sans-serif;
       }
 
-      .wrap {
-        max-width: 1120px;
-        margin: 22px auto 40px;
-        padding: 0 14px;
+      .shell {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 250px 1fr;
       }
 
-      .top {
+      .sidebar {
+        background: #1b2746;
+        color: #dce5ff;
+        padding: 22px 16px;
+        border-right: 1px solid #25345d;
+      }
+
+      .brand {
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: 0.01em;
+        margin-bottom: 22px;
+      }
+
+      .side-section {
+        font-size: 11px;
+        text-transform: uppercase;
+        opacity: 0.7;
+        letter-spacing: 0.09em;
+        margin: 18px 0 10px;
+      }
+
+      .side-link {
+        padding: 10px 10px;
+        border-radius: 10px;
+        margin-bottom: 5px;
+        background: transparent;
+      }
+
+      .side-link.active {
+        background: rgba(88, 136, 255, 0.22);
+      }
+
+      .main {
+        padding: 16px 18px 24px;
+      }
+
+      .topbar {
         display: grid;
         grid-template-columns: 1fr auto;
-        gap: 14px;
-        align-items: end;
+        gap: 10px;
+        align-items: center;
       }
 
-      .kicker {
-        color: #8a6748;
-        font-size: 10px;
-        letter-spacing: 0.14em;
-        font-weight: 700;
-        text-transform: uppercase;
+      .search {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        height: 42px;
+        padding: 0 12px;
+        font-size: 13px;
       }
 
-      h1 {
-        margin: 2px 0 6px;
-        font-size: 58px;
-        line-height: 0.92;
-        letter-spacing: -0.02em;
-      }
-
-      .subtitle {
-        margin: 0;
-        color: var(--muted);
-        font-family: "Avenir Next", "Segoe UI", sans-serif;
-        font-size: 12px;
-      }
-
-      .stats {
-        display: grid;
-        grid-template-columns: repeat(2, 72px);
+      .top-actions {
+        display: flex;
         gap: 8px;
       }
 
-      .stat {
-        background: var(--paper);
-        border: 1px solid var(--line);
-        border-radius: 4px;
-        padding: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-      }
-
-      .stat .n {
-        display: block;
-        font-size: 28px;
-        font-weight: 700;
-        line-height: 1;
-      }
-
-      .stat .l {
-        color: var(--muted);
-        font-size: 10px;
-        font-family: "Avenir Next", "Segoe UI", sans-serif;
-      }
-
-      .toolbar {
-        margin-top: 14px;
-        display: grid;
-        grid-template-columns: 108px 1fr 1fr 96px;
-        gap: 6px;
-        background: #2d2b29;
-        border-radius: 4px;
-        padding: 6px;
-      }
-
-      .toolbar input,
-      .toolbar button {
-        border: 1px solid #4a4641;
-        border-radius: 3px;
-        background: #f8f6ef;
-        color: var(--ink);
-        height: 28px;
-        padding: 0 8px;
-        font-size: 12px;
-        font-family: "Avenir Next", "Segoe UI", sans-serif;
-      }
-
-      .toolbar button {
-        background: var(--accent);
-        border-color: #135651;
-        color: #fff;
-        font-weight: 600;
-        cursor: pointer;
-      }
-
-      .toolbar-label {
-        color: #f8f6ef;
-        font-size: 11px;
-        font-family: "Avenir Next", "Segoe UI", sans-serif;
-        display: flex;
+      .chip {
+        min-width: 40px;
+        height: 40px;
+        display: inline-flex;
         align-items: center;
-        padding-left: 6px;
+        justify-content: center;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--surface);
+      }
+
+      .hero {
+        margin-top: 12px;
+        background: linear-gradient(102deg, #1f7ae0 0%, #0ea5e9 45%, #22c7b8 100%);
+        color: #fff;
+        border-radius: var(--radius);
+        padding: 20px;
+        box-shadow: var(--shadow);
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-size: 34px;
+      }
+
+      .hero p {
+        margin: 8px 0 0;
+        font-size: 14px;
+        opacity: 0.92;
+      }
+
+      .quick-cards {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(110px, 1fr));
+        gap: 10px;
+      }
+
+      .quick-card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 12px;
+        box-shadow: var(--shadow);
+      }
+
+      .quick-title {
+        color: var(--muted);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+      }
+
+      .quick-value {
+        margin-top: 6px;
+        font-size: 24px;
+        font-weight: 800;
       }
 
       .layout {
-        margin-top: 10px;
+        margin-top: 12px;
         display: grid;
-        grid-template-columns: 1.35fr 0.55fr;
+        grid-template-columns: 1.45fr 0.7fr;
         gap: 10px;
       }
 
       .panel {
-        background: var(--card);
+        background: var(--surface);
         border: 1px solid var(--line);
-        border-radius: 4px;
-        box-shadow: 0 5px 14px rgba(0, 0, 0, 0.06);
-        padding: 10px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 12px;
       }
 
       .panel-head {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 8px;
-      }
-
-      .panel-kicker {
-        color: #c27d4f;
-        font-size: 9px;
-        font-family: "Avenir Next", "Segoe UI", sans-serif;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
+        margin-bottom: 10px;
       }
 
       .panel-title {
-        margin-top: 1px;
-        font-size: 15px;
-        font-weight: 700;
+        font-size: 17px;
+        font-weight: 800;
       }
 
-      .book-list,
-      .author-list {
+      .toolbar {
+        display: grid;
+        grid-template-columns: 1.1fr 1fr 80px 130px;
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+
+      .toolbar input,
+      .toolbar button,
+      .form input,
+      .form button,
+      .form select {
+        height: 34px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        font-size: 12px;
+        padding: 0 10px;
+      }
+
+      .toolbar button,
+      .form button,
+      .btn-primary {
+        border: 0;
+        background: var(--brand);
+        color: #fff;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .toolbar button:hover,
+      .form button:hover,
+      .btn-primary:hover {
+        background: var(--brand-2);
+      }
+
+      .books-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(250px, 1fr));
+        gap: 10px;
+      }
+
+      .book-card {
+        background: var(--surface-2);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px;
+      }
+
+      .book-card.draggable {
+        cursor: grab;
+      }
+
+      .book-card.draggable:active {
+        cursor: grabbing;
+      }
+
+      .book-card.dragging {
+        opacity: 0.5;
+      }
+
+      .book-card.drop-target {
+        outline: 2px dashed var(--brand);
+        outline-offset: 2px;
+      }
+
+      .book-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .book-name {
+        font-size: 15px;
+        font-weight: 800;
+      }
+
+      .book-meta {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 2px;
+      }
+
+      .book-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 8px;
+      }
+
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 8px;
+        border-radius: 999px;
+        font-size: 10px;
+        font-weight: 700;
+        background: #e8eefb;
+        color: #355088;
+      }
+
+      .tag.genre {
+        background: #e6fbf7;
+        color: #0f7d74;
+      }
+
+      .book-actions {
+        display: flex;
+        gap: 6px;
+      }
+
+      .btn-sm {
+        height: 28px;
+        border-radius: 9px;
+        border: 1px solid var(--line);
+        background: #fff;
+        padding: 0 9px;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .btn-sm.edit {
+        color: #1f7ae0;
+      }
+
+      .btn-sm.delete {
+        color: var(--danger);
+      }
+
+      .side-stack {
+        display: grid;
+        gap: 10px;
+      }
+
+      .form {
+        display: grid;
+        gap: 6px;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 100px;
+        gap: 6px;
+      }
+
+      .popular-list,
+      .recent-list {
         list-style: none;
         margin: 0;
         padding: 0;
       }
 
-      .book-item,
-      .author-item {
-        border: 1px solid var(--line);
-        border-radius: 3px;
-        background: #fff;
-        padding: 8px;
-        margin-bottom: 7px;
-      }
-
-      .draggable-item {
-        cursor: grab;
-      }
-
-      .draggable-item:active {
-        cursor: grabbing;
-      }
-
-      .dragging {
-        opacity: 0.55;
-      }
-
-      .drop-target {
-        outline: 2px dashed var(--accent);
-        outline-offset: 2px;
-      }
-
-      .book-top {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 6px;
-      }
-
-      .book-title {
-        font-weight: 700;
-        font-size: 13px;
-      }
-
-      .meta {
-        color: var(--muted);
-        font-family: "Avenir Next", "Segoe UI", sans-serif;
-        font-size: 11px;
-      }
-
-      .book-meta {
-        margin-top: 7px;
-        display: grid;
-        grid-template-columns: 1.4fr 0.8fr 0.9fr;
-        gap: 8px;
-      }
-
-      .meta-key {
-        color: #8b8378;
-        font-size: 9px;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-      }
-
-      .danger-btn {
-        height: 22px;
-        min-width: 22px;
-        border: 1px solid #ddb9b9;
-        border-radius: 999px;
-        background: #fff6f6;
-        color: var(--danger);
+      .popular-item,
+      .recent-item {
+        border-top: 1px solid var(--line);
+        padding: 8px 0;
         font-size: 12px;
-        cursor: pointer;
       }
 
-      form {
+      .popular-item:first-child,
+      .recent-item:first-child {
+        border-top: 0;
+        padding-top: 0;
+      }
+
+      .lower {
+        margin-top: 10px;
         display: grid;
-        gap: 6px;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
       }
 
-      .row2 {
-        display: grid;
-        grid-template-columns: 1fr 62px;
-        gap: 6px;
+      .chart {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+        min-height: 180px;
       }
 
-      input {
+      .bar-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
         width: 100%;
-        height: 29px;
-        border: 1px solid var(--line);
-        border-radius: 3px;
-        padding: 0 8px;
-        font-size: 12px;
-        font-family: "Avenir Next", "Segoe UI", sans-serif;
       }
 
-      .primary {
-        height: 28px;
-        border: 0;
-        border-radius: 3px;
-        background: var(--accent);
-        color: #fff;
+      .bar {
+        width: 100%;
+        max-width: 42px;
+        background: linear-gradient(180deg, #5da0ff 0%, #1f7ae0 100%);
+        border-radius: 8px 8px 4px 4px;
+      }
+
+      .bar-date {
+        font-size: 10px;
+        color: var(--muted);
+      }
+
+      .bar-value {
+        font-size: 10px;
         font-weight: 700;
-        cursor: pointer;
-        font-size: 12px;
-      }
-
-      .primary:hover,
-      .toolbar button:hover {
-        background: var(--accent-2);
       }
 
       .status {
         margin-top: 8px;
-        min-height: 16px;
         color: var(--muted);
-        font-family: "Avenir Next", "Segoe UI", sans-serif;
         font-size: 12px;
       }
 
       .status.error {
-        color: #9d3f3f;
+        color: #b91c1c;
       }
 
       .modal-backdrop {
         position: fixed;
         inset: 0;
-        background: rgba(20, 16, 10, 0.42);
+        background: rgba(14, 23, 44, 0.42);
         display: none;
         align-items: center;
         justify-content: center;
+        z-index: 40;
         padding: 14px;
-        z-index: 30;
       }
 
       .modal-backdrop.open {
@@ -312,11 +420,11 @@ export class AppController {
       }
 
       .modal {
-        width: min(420px, 100%);
-        background: #fffdf8;
+        width: min(460px, 100%);
+        background: #fff;
         border: 1px solid var(--line);
-        border-radius: 7px;
-        box-shadow: 0 20px 55px rgba(0, 0, 0, 0.24);
+        border-radius: 14px;
+        box-shadow: var(--shadow);
         padding: 14px;
       }
 
@@ -328,7 +436,6 @@ export class AppController {
       .modal p {
         margin: 8px 0 12px;
         color: var(--muted);
-        font-family: "Avenir Next", "Segoe UI", sans-serif;
         font-size: 13px;
       }
 
@@ -340,8 +447,8 @@ export class AppController {
 
       .btn-secondary,
       .btn-danger {
-        height: 30px;
-        border-radius: 4px;
+        height: 32px;
+        border-radius: 10px;
         padding: 0 12px;
         font-size: 12px;
         font-weight: 700;
@@ -355,166 +462,238 @@ export class AppController {
       }
 
       .btn-danger {
-        border: 1px solid #8d3131;
+        border: 0;
         background: var(--danger);
         color: #fff;
       }
 
-      .small {
-        font-size: 10px;
-        color: var(--muted);
+      @media (max-width: 1180px) {
+        .shell {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          display: none;
+        }
       }
 
       @media (max-width: 980px) {
-        h1 {
-          font-size: 46px;
+        .layout,
+        .lower {
+          grid-template-columns: 1fr;
         }
-        .layout {
+
+        .quick-cards {
+          grid-template-columns: repeat(2, minmax(110px, 1fr));
+        }
+
+        .books-grid {
           grid-template-columns: 1fr;
         }
       }
 
-      @media (max-width: 700px) {
-        .top {
-          grid-template-columns: 1fr;
-        }
-        .stats {
-          grid-template-columns: repeat(2, minmax(80px, 1fr));
-          max-width: 190px;
-        }
+      @media (max-width: 720px) {
         .toolbar {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .form-row {
           grid-template-columns: 1fr;
         }
       }
     </style>
   </head>
   <body>
-    <main class="wrap">
-      <section class="top">
-        <div>
-          <div class="kicker">Library Operations</div>
-          <h1>Book Library</h1>
-          <p class="subtitle">Maintain the catalog and author registry from one compact desk.</p>
-        </div>
-        <div class="stats">
-          <article class="stat">
-            <span id="book-count" class="n">0</span>
-            <span class="l">Books</span>
-          </article>
-          <article class="stat">
-            <span id="author-count" class="n">0</span>
-            <span class="l">Authors</span>
-          </article>
-        </div>
-      </section>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">EduAdmin</div>
+        <div class="side-section">Components</div>
+        <div class="side-link active">Book Dashboard</div>
+        <div class="side-link">Catalog Manager</div>
+        <div class="side-link">Authors</div>
+        <div class="side-section">Insights</div>
+        <div class="side-link">Recent Books</div>
+        <div class="side-link">Popular Authors</div>
+        <div class="side-link">Additions Chart</div>
+      </aside>
 
-      <section class="toolbar">
-        <div class="toolbar-label">Filter catalog</div>
-        <input id="filter-author" type="text" placeholder="Author" />
-        <input id="filter-genre" type="text" placeholder="Genre" />
-        <button id="refresh-btn" type="button">Refresh</button>
-      </section>
-
-      <section class="layout">
-        <article class="panel">
-          <div class="panel-head">
-            <div>
-              <div class="panel-kicker">Catalog</div>
-              <div class="panel-title">Books</div>
-            </div>
-            <div class="small" id="books-label">0 shown</div>
+      <main class="main">
+        <section class="topbar">
+          <input id="search-book" class="search" type="text" placeholder="Search by title or author" />
+          <div class="top-actions">
+            <div class="chip">B</div>
+            <div class="chip">A</div>
+            <div class="chip">+</div>
           </div>
-          <ul id="books" class="book-list"></ul>
-        </article>
+        </section>
 
-        <div>
+        <section class="hero">
+          <h1>Book Library</h1>
+          <p>Track your collection, monitor recent additions, and manage author popularity from one modern dashboard.</p>
+        </section>
+
+        <section class="quick-cards">
+          <article class="quick-card">
+            <div class="quick-title">Books</div>
+            <div id="metric-books" class="quick-value">0</div>
+          </article>
+          <article class="quick-card">
+            <div class="quick-title">Authors</div>
+            <div id="metric-authors" class="quick-value">0</div>
+          </article>
+          <article class="quick-card">
+            <div class="quick-title">Genres</div>
+            <div id="metric-genres" class="quick-value">0</div>
+          </article>
+          <article class="quick-card">
+            <div class="quick-title">Recent (7d)</div>
+            <div id="metric-recent" class="quick-value">0</div>
+          </article>
+        </section>
+
+        <section class="layout">
           <article class="panel">
             <div class="panel-head">
-              <div>
-                <div class="panel-kicker">New Entry</div>
+              <div class="panel-title">Current Books</div>
+              <div id="books-count-label" class="quick-title">0 entries</div>
+            </div>
+
+            <div class="toolbar">
+              <input id="filter-author" type="text" placeholder="Filter by author" />
+              <input id="filter-genre" type="text" placeholder="Filter by genre" />
+              <button id="refresh-btn" type="button">Refresh</button>
+              <button id="generate-random-btn" type="button">Generate Random</button>
+            </div>
+
+            <div id="book-cards" class="books-grid"></div>
+          </article>
+
+          <section class="side-stack">
+            <article class="panel">
+              <div class="panel-head">
                 <div class="panel-title">Add Book</div>
               </div>
-              <div class="small">+</div>
-            </div>
-            <form id="book-form">
-              <input name="title" type="text" placeholder="Title" required />
-              <input name="author" type="text" placeholder="Author" required />
-              <div class="row2">
+              <form id="book-form" class="form">
+                <input name="title" type="text" placeholder="Title" required />
+                <input name="author" type="text" placeholder="Author" required />
                 <input name="isbn" type="text" placeholder="ISBN" required />
-                <input name="publishedYear" type="number" min="0" max="9999" placeholder="Year" required />
-              </div>
-              <input name="genre" type="text" placeholder="Genre" />
-              <button class="primary" type="submit">+ Add book</button>
-            </form>
-          </article>
+                <div class="form-row">
+                  <input name="genre" type="text" placeholder="Genre" />
+                  <input name="publishedYear" type="number" min="0" max="9999" placeholder="Year" required />
+                </div>
+                <button type="submit">+ Add Book</button>
+              </form>
+            </article>
 
-          <article class="panel" style="margin-top: 10px;">
-            <div class="panel-head">
-              <div>
-                <div class="panel-kicker">Registry</div>
+            <article class="panel">
+              <div class="panel-head">
                 <div class="panel-title">Add Author</div>
               </div>
-              <div class="small">+</div>
-            </div>
-            <form id="author-form">
-              <input name="name" type="text" placeholder="Name" required />
-              <input name="nationality" type="text" placeholder="Nationality" />
-              <input name="birthYear" type="number" min="0" max="9999" placeholder="Birth year" />
-              <button class="primary" type="submit">+ Add author</button>
-            </form>
-          </article>
+              <form id="author-form" class="form">
+                <input name="name" type="text" placeholder="Name" required />
+                <input name="nationality" type="text" placeholder="Nationality" />
+                <input name="birthYear" type="number" min="0" max="9999" placeholder="Birth year" />
+                <button type="submit">+ Add Author</button>
+              </form>
+            </article>
 
-          <article class="panel" style="margin-top: 10px;">
-            <div class="panel-head">
-              <div>
-                <div class="panel-kicker">People</div>
-                <div class="panel-title">Authors</div>
+            <article class="panel">
+              <div class="panel-head">
+                <div class="panel-title">Most Popular Authors</div>
               </div>
-              <div class="small" id="authors-label">0 total</div>
+              <ul id="popular-authors" class="popular-list"></ul>
+            </article>
+          </section>
+        </section>
+
+        <section class="lower">
+          <article class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Recent Books</div>
             </div>
-            <ul id="authors" class="author-list"></ul>
+            <ul id="recent-books" class="recent-list"></ul>
           </article>
-        </div>
-      </section>
 
-      <div id="status" class="status">Ready.</div>
+          <article class="panel">
+            <div class="panel-head">
+              <div class="panel-title">Books Added by Date</div>
+            </div>
+            <div id="added-chart" class="chart"></div>
+          </article>
+        </section>
 
-      <div id="delete-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="delete-title">
-        <div class="modal" data-modal-panel="true">
-          <h3 id="delete-title">Are you sure?</h3>
-          <p>This will permanently remove the selected book from the catalog.</p>
-          <div class="modal-actions">
-            <button id="cancel-delete-btn" type="button" class="btn-secondary">Cancel</button>
-            <button id="confirm-delete-btn" type="button" class="btn-danger">Delete</button>
-          </div>
+        <div id="status" class="status">Ready.</div>
+      </main>
+    </div>
+
+    <div id="delete-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="delete-title">
+      <div class="modal">
+        <h3 id="delete-title">Are you sure?</h3>
+        <p>This action permanently removes the selected book.</p>
+        <div class="modal-actions">
+          <button id="cancel-delete-btn" type="button" class="btn-secondary">Cancel</button>
+          <button id="confirm-delete-btn" type="button" class="btn-danger">Delete</button>
         </div>
       </div>
-    </main>
+    </div>
+
+    <div id="edit-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="edit-title">
+      <div class="modal">
+        <h3 id="edit-title">Edit Book</h3>
+        <p>Update book details and save changes.</p>
+        <form id="edit-book-form" class="form">
+          <input name="title" type="text" placeholder="Title" required />
+          <input name="author" type="text" placeholder="Author" required />
+          <input name="isbn" type="text" placeholder="ISBN" required />
+          <div class="form-row">
+            <input name="genre" type="text" placeholder="Genre" />
+            <input name="publishedYear" type="number" min="0" max="9999" placeholder="Year" required />
+          </div>
+          <div class="modal-actions">
+            <button id="cancel-edit-btn" type="button" class="btn-secondary">Cancel</button>
+            <button id="save-edit-btn" type="submit" class="btn-primary">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
     <script>
       const state = {
         books: [],
         authors: [],
+        pendingDeleteBookId: null,
+        editingBook: null,
+        addedById: {},
+        draggingBookId: null,
       };
 
-      const booksEl = document.getElementById('books');
-      const authorsEl = document.getElementById('authors');
-      const statusEl = document.getElementById('status');
-      const bookCountEl = document.getElementById('book-count');
-      const authorCountEl = document.getElementById('author-count');
-      const booksLabelEl = document.getElementById('books-label');
-      const authorsLabelEl = document.getElementById('authors-label');
+      const storageKey = 'book-library-added-by-id';
+
+      const searchBookEl = document.getElementById('search-book');
       const filterAuthorEl = document.getElementById('filter-author');
       const filterGenreEl = document.getElementById('filter-genre');
       const refreshBtnEl = document.getElementById('refresh-btn');
+      const generateRandomBtnEl = document.getElementById('generate-random-btn');
+      const bookCardsEl = document.getElementById('book-cards');
+      const popularAuthorsEl = document.getElementById('popular-authors');
+      const recentBooksEl = document.getElementById('recent-books');
+      const addedChartEl = document.getElementById('added-chart');
+      const booksCountLabelEl = document.getElementById('books-count-label');
+      const metricBooksEl = document.getElementById('metric-books');
+      const metricAuthorsEl = document.getElementById('metric-authors');
+      const metricGenresEl = document.getElementById('metric-genres');
+      const metricRecentEl = document.getElementById('metric-recent');
+      const statusEl = document.getElementById('status');
       const bookFormEl = document.getElementById('book-form');
       const authorFormEl = document.getElementById('author-form');
+
       const deleteModalEl = document.getElementById('delete-modal');
       const confirmDeleteBtnEl = document.getElementById('confirm-delete-btn');
       const cancelDeleteBtnEl = document.getElementById('cancel-delete-btn');
-      let draggingBookId = null;
-      let draggingAuthorId = null;
-      let pendingDeleteBookId = null;
+
+      const editModalEl = document.getElementById('edit-modal');
+      const editBookFormEl = document.getElementById('edit-book-form');
+      const cancelEditBtnEl = document.getElementById('cancel-edit-btn');
 
       function esc(value) {
         return String(value)
@@ -525,20 +704,68 @@ export class AppController {
           .replace(/'/g, '&#39;');
       }
 
+      function todayKey() {
+        return new Date().toISOString().slice(0, 10);
+      }
+
+      function readAddedStore() {
+        try {
+          const raw = localStorage.getItem(storageKey);
+          if (!raw) {
+            return {};
+          }
+          const parsed = JSON.parse(raw);
+          if (!parsed || typeof parsed !== 'object') {
+            return {};
+          }
+          return parsed;
+        } catch (err) {
+          return {};
+        }
+      }
+
+      function writeAddedStore() {
+        localStorage.setItem(storageKey, JSON.stringify(state.addedById));
+      }
+
+      function ensureAddedDates() {
+        const currentDate = todayKey();
+        let changed = false;
+
+        for (const book of state.books) {
+          const id = String(book.id);
+          if (!state.addedById[id]) {
+            state.addedById[id] = currentDate;
+            changed = true;
+          }
+        }
+
+        const validIds = new Set(state.books.map((book) => String(book.id)));
+        for (const id of Object.keys(state.addedById)) {
+          if (!validIds.has(id)) {
+            delete state.addedById[id];
+            changed = true;
+          }
+        }
+
+        if (changed) {
+          writeAddedStore();
+        }
+      }
+
       function setStatus(message, isError) {
         statusEl.textContent = message;
         statusEl.className = isError ? 'status error' : 'status';
       }
 
-      function filteredBooks() {
-        const authorFilter = filterAuthorEl.value.trim().toLowerCase();
-        const genreFilter = filterGenreEl.value.trim().toLowerCase();
+      function normalizeDateLabel(value) {
+        return value.slice(5);
+      }
 
-        return state.books.filter((book) => {
-          const authorOk = !authorFilter || String(book.author || '').toLowerCase().includes(authorFilter);
-          const genreOk = !genreFilter || String(book.genre || '').toLowerCase().includes(genreFilter);
-          return authorOk && genreOk;
-        });
+      function dateDaysAgo(days) {
+        const date = new Date();
+        date.setDate(date.getDate() - days);
+        return date.toISOString().slice(0, 10);
       }
 
       function reorderById(list, fromId, toId) {
@@ -553,70 +780,173 @@ export class AppController {
       }
 
       function clearDropTargets(container) {
-        container
-          .querySelectorAll('.drop-target')
-          .forEach((node) => node.classList.remove('drop-target'));
+        container.querySelectorAll('.drop-target').forEach((node) => node.classList.remove('drop-target'));
       }
 
-      function renderBooks() {
-        const books = filteredBooks();
-        booksLabelEl.textContent = books.length + ' shown';
+      function getFilteredBooks() {
+        const search = searchBookEl.value.trim().toLowerCase();
+        const authorFilter = filterAuthorEl.value.trim().toLowerCase();
+        const genreFilter = filterGenreEl.value.trim().toLowerCase();
 
-        if (books.length === 0) {
-          booksEl.innerHTML = '<li class="book-item"><span class="meta">No matching books.</span></li>';
+        return state.books.filter((book) => {
+          const title = String(book.title || '').toLowerCase();
+          const author = String(book.author || '').toLowerCase();
+          const genre = String(book.genre || '').toLowerCase();
+
+          const searchOk = !search || title.includes(search) || author.includes(search);
+          const authorOk = !authorFilter || author.includes(authorFilter);
+          const genreOk = !genreFilter || genre.includes(genreFilter);
+
+          return searchOk && authorOk && genreOk;
+        });
+      }
+
+      function renderMetrics(filteredBooks) {
+        metricBooksEl.textContent = String(state.books.length);
+        metricAuthorsEl.textContent = String(state.authors.length);
+
+        const genres = new Set(state.books.map((book) => String(book.genre || '').trim()).filter(Boolean));
+        metricGenresEl.textContent = String(genres.size);
+
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 6);
+        let recentCount = 0;
+        for (const id of Object.keys(state.addedById)) {
+          const dateValue = new Date(state.addedById[id]);
+          if (dateValue >= sevenDaysAgo) {
+            recentCount += 1;
+          }
+        }
+        metricRecentEl.textContent = String(recentCount);
+
+        booksCountLabelEl.textContent = filteredBooks.length + ' entries';
+      }
+
+      function renderBookCards(filteredBooks) {
+        if (filteredBooks.length === 0) {
+          bookCardsEl.innerHTML = '<article class="book-card">No books match the current filters.</article>';
           return;
         }
 
-        booksEl.innerHTML = books
-          .map(
-            (book) =>
-              '<li class="book-item draggable-item" draggable="true" data-book-id="' + esc(book.id) + '">' +
+        bookCardsEl.innerHTML = filteredBooks
+          .map((book) => {
+            const addedDate = state.addedById[String(book.id)] || todayKey();
+            return (
+              '<article class="book-card draggable" draggable="true" data-book-id="' + esc(book.id) + '">' +
               '<div class="book-top">' +
               '<div>' +
-              '<div class="book-title">' + esc(book.title) + '</div>' +
-              '<div class="meta">' + esc(book.author) + '</div>' +
+              '<div class="book-name">' + esc(book.title) + '</div>' +
+              '<div class="book-meta">' + esc(book.author) + '</div>' +
               '</div>' +
-              '<button class="danger-btn" data-delete-book-id="' + esc(book.id) + '" title="Delete book">x</button>' +
+              '<div class="book-actions">' +
+              '<button class="btn-sm edit" data-edit-book-id="' + esc(book.id) + '">Edit</button>' +
+              '<button class="btn-sm delete" data-delete-book-id="' + esc(book.id) + '">Delete</button>' +
               '</div>' +
-              '<div class="book-meta">' +
-              '<div><div class="meta-key">ISBN</div><div class="meta">' + esc(book.isbn) + '</div></div>' +
-              '<div><div class="meta-key">Year</div><div class="meta">' + esc(book.publishedYear) + '</div></div>' +
-              '<div><div class="meta-key">Genre</div><div class="meta">' + esc(book.genre || 'N/A') + '</div></div>' +
               '</div>' +
-              '</li>',
-          )
+              '<div class="book-tags">' +
+              '<span class="tag">ISBN ' + esc(book.isbn) + '</span>' +
+              '<span class="tag">Year ' + esc(book.publishedYear) + '</span>' +
+              '<span class="tag genre">' + esc(book.genre || 'Uncategorized') + '</span>' +
+              '<span class="tag">Added ' + esc(addedDate) + '</span>' +
+              '</div>' +
+              '</article>'
+            );
+          })
           .join('');
       }
 
-      function renderAuthors() {
-        authorsLabelEl.textContent = state.authors.length + ' total';
+      function renderRecentBooks() {
+        const ordered = [...state.books].sort((a, b) => {
+          const aDate = state.addedById[String(a.id)] || '';
+          const bDate = state.addedById[String(b.id)] || '';
+          return bDate.localeCompare(aDate);
+        });
 
-        if (state.authors.length === 0) {
-          authorsEl.innerHTML = '<li class="author-item"><span class="meta">No authors yet.</span></li>';
+        if (ordered.length === 0) {
+          recentBooksEl.innerHTML = '<li class="recent-item">No recent books.</li>';
           return;
         }
 
-        authorsEl.innerHTML = state.authors
+        recentBooksEl.innerHTML = ordered
+          .slice(0, 8)
+          .map((book) => {
+            const addedDate = state.addedById[String(book.id)] || todayKey();
+            return (
+              '<li class="recent-item">' +
+              '<strong>' + esc(book.title) + '</strong><br />' +
+              '<span style="color: var(--muted);">' + esc(book.author) + ' · Added ' + esc(addedDate) + '</span>' +
+              '</li>'
+            );
+          })
+          .join('');
+      }
+
+      function renderPopularAuthors() {
+        const counter = {};
+        for (const book of state.books) {
+          const key = String(book.author || '').trim() || 'Unknown';
+          counter[key] = (counter[key] || 0) + 1;
+        }
+
+        const ranked = Object.entries(counter).sort((a, b) => b[1] - a[1]);
+
+        if (ranked.length === 0) {
+          popularAuthorsEl.innerHTML = '<li class="popular-item">No author stats yet.</li>';
+          return;
+        }
+
+        popularAuthorsEl.innerHTML = ranked
+          .slice(0, 6)
           .map(
-            (author) =>
-              '<li class="author-item draggable-item" draggable="true" data-author-id="' + esc(author.id) + '">' +
-              '<div class="book-title">' + esc(author.name) + '</div>' +
-              '<div class="meta">' + esc(author.nationality || 'Unknown nationality') + '</div>' +
-              '<div class="meta">Born: ' + esc(author.birthYear || 'N/A') + '</div>' +
-              '</li>',
+            ([name, count], index) =>
+              '<li class="popular-item">#' + (index + 1) + ' <strong>' + esc(name) + '</strong> · ' + esc(count) + ' books</li>',
           )
           .join('');
       }
 
-      function renderStats() {
-        bookCountEl.textContent = String(state.books.length);
-        authorCountEl.textContent = String(state.authors.length);
+      function renderAdditionChart() {
+        const counts = {};
+        const now = new Date();
+        const labels = [];
+        for (let i = 6; i >= 0; i -= 1) {
+          const date = new Date(now);
+          date.setDate(now.getDate() - i);
+          const key = date.toISOString().slice(0, 10);
+          labels.push(key);
+          counts[key] = 0;
+        }
+
+        for (const id of Object.keys(state.addedById)) {
+          const key = state.addedById[id];
+          if (counts[key] !== undefined) {
+            counts[key] += 1;
+          }
+        }
+
+        const maxCount = Math.max(1, ...Object.values(counts));
+
+        addedChartEl.innerHTML = labels
+          .map((key) => {
+            const value = counts[key];
+            const height = Math.max(10, Math.round((value / maxCount) * 130));
+            return (
+              '<div class="bar-wrap">' +
+              '<div class="bar-value">' + value + '</div>' +
+              '<div class="bar" style="height:' + height + 'px"></div>' +
+              '<div class="bar-date">' + normalizeDateLabel(key) + '</div>' +
+              '</div>'
+            );
+          })
+          .join('');
       }
 
-      function render() {
-        renderStats();
-        renderBooks();
-        renderAuthors();
+      function renderAll() {
+        const filtered = getFilteredBooks();
+        renderMetrics(filtered);
+        renderBookCards(filtered);
+        renderRecentBooks();
+        renderPopularAuthors();
+        renderAdditionChart();
       }
 
       async function fetchJson(url, options) {
@@ -639,52 +969,207 @@ export class AppController {
 
       async function loadAll() {
         try {
-          setStatus('Loading catalog...', false);
-          const [books, authors] = await Promise.all([
-            fetchJson('/api/books'),
-            fetchJson('/api/authors'),
-          ]);
+          setStatus('Loading dashboard data...', false);
+          const [books, authors] = await Promise.all([fetchJson('/api/books'), fetchJson('/api/authors')]);
           state.books = Array.isArray(books) ? books : [];
           state.authors = Array.isArray(authors) ? authors : [];
-          render();
-          setStatus('Catalog synced.', false);
+          ensureAddedDates();
+          renderAll();
+          setStatus('Dashboard synced.', false);
         } catch (err) {
           setStatus('Could not load API data: ' + err.message, true);
         }
       }
 
       function openDeleteModal(bookId) {
-        pendingDeleteBookId = String(bookId);
+        state.pendingDeleteBookId = String(bookId);
         deleteModalEl.classList.add('open');
       }
 
       function closeDeleteModal() {
-        pendingDeleteBookId = null;
+        state.pendingDeleteBookId = null;
         deleteModalEl.classList.remove('open');
       }
 
-      booksEl.addEventListener('click', async (event) => {
+      function openEditModal(bookId) {
+        const found = state.books.find((book) => String(book.id) === String(bookId));
+        if (!found) {
+          setStatus('Book not found for editing.', true);
+          return;
+        }
+
+        state.editingBook = found;
+        editBookFormEl.elements.title.value = found.title || '';
+        editBookFormEl.elements.author.value = found.author || '';
+        editBookFormEl.elements.isbn.value = found.isbn || '';
+        editBookFormEl.elements.genre.value = found.genre || '';
+        editBookFormEl.elements.publishedYear.value = String(found.publishedYear || '');
+        editModalEl.classList.add('open');
+      }
+
+      function closeEditModal() {
+        state.editingBook = null;
+        editModalEl.classList.remove('open');
+      }
+
+      function randomFrom(list) {
+        return list[Math.floor(Math.random() * list.length)];
+      }
+
+      async function generateRandomBooks(count) {
+        const left = ['Hidden', 'Silver', 'Silent', 'Digital', 'Final', 'Solar', 'Broken', 'Secret', 'Golden', 'Crystal', 'Ancient', 'Neon'];
+        const right = ['Pages', 'Network', 'Library', 'Formula', 'Orbit', 'Code', 'Legacy', 'Index', 'Voyage', 'Cipher'];
+        const genres = ['Fantasy', 'Science Fiction', 'Mystery', 'Historical', 'Thriller', 'Drama', 'Romance', 'Biography', 'Horror', 'Adventure'];
+        const randomAuthorPool = ['A. Walker', 'M. Bennett', 'R. Quinn', 'L. Carter', 'N. Rivera', 'J. Young', 'K. Adams', 'D. Brooks', 'S. Reed', 'P. Morgan'];
+        const existingAuthors = state.authors.map((author) => author.name).filter(Boolean);
+        const pool = Array.from(new Set([...existingAuthors, ...randomAuthorPool]));
+
+        const daysWindow = 10;
+        const spreadDates = [];
+        for (let i = 0; i < count; i += 1) {
+          spreadDates.push(dateDaysAgo(i % daysWindow));
+        }
+        spreadDates.sort(() => Math.random() - 0.5);
+
+        for (let i = 0; i < count; i += 1) {
+          const chosenAuthor = randomFrom(pool);
+          const addedDate = spreadDates[i];
+          const payload = {
+            title: randomFrom(left) + ' ' + randomFrom(right),
+            author: chosenAuthor,
+            isbn: 'RND-' + Date.now().toString(36) + '-' + i.toString(36) + '-' + Math.floor(Math.random() * 99999).toString(36),
+            publishedYear: 1950 + Math.floor(Math.random() * 76),
+            genre: randomFrom(genres),
+          };
+
+          if (!state.authors.some((author) => author.name === chosenAuthor)) {
+            try {
+              await fetchJson('/api/authors', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  name: chosenAuthor,
+                  nationality: randomFrom(['US', 'UK', 'Canada', 'Spain', 'Greece', 'France', 'Germany']),
+                  birthYear: 1940 + Math.floor(Math.random() * 55),
+                }),
+              });
+            } catch (err) {
+              // Ignore author creation conflicts and continue generating books.
+            }
+          }
+
+          const created = await fetchJson('/api/books', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          if (created && created.id !== undefined) {
+            state.addedById[String(created.id)] = addedDate;
+          }
+        }
+
+        writeAddedStore();
+      }
+
+      bookCardsEl.addEventListener('dragstart', (event) => {
         const target = event.target;
         if (!(target instanceof HTMLElement)) {
           return;
         }
-        const id = target.getAttribute('data-delete-book-id');
-        if (!id) {
+        const card = target.closest('[data-book-id]');
+        if (!(card instanceof HTMLElement)) {
+          return;
+        }
+        state.draggingBookId = card.getAttribute('data-book-id');
+        card.classList.add('dragging');
+        if (event.dataTransfer) {
+          event.dataTransfer.effectAllowed = 'move';
+        }
+      });
+
+      bookCardsEl.addEventListener('dragend', (event) => {
+        const target = event.target;
+        if (target instanceof HTMLElement) {
+          target.classList.remove('dragging');
+        }
+        state.draggingBookId = null;
+        clearDropTargets(bookCardsEl);
+      });
+
+      bookCardsEl.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) {
+          return;
+        }
+        const card = target.closest('[data-book-id]');
+        if (!(card instanceof HTMLElement)) {
+          clearDropTargets(bookCardsEl);
+          return;
+        }
+        clearDropTargets(bookCardsEl);
+        card.classList.add('drop-target');
+      });
+
+      bookCardsEl.addEventListener('drop', (event) => {
+        event.preventDefault();
+        if (!state.draggingBookId) {
+          return;
+        }
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) {
+          return;
+        }
+        const card = target.closest('[data-book-id]');
+        if (!(card instanceof HTMLElement)) {
+          clearDropTargets(bookCardsEl);
           return;
         }
 
-        openDeleteModal(id);
+        const dropId = card.getAttribute('data-book-id');
+        if (!dropId) {
+          clearDropTargets(bookCardsEl);
+          return;
+        }
+
+        const changed = reorderById(state.books, state.draggingBookId, dropId);
+        clearDropTargets(bookCardsEl);
+        if (changed) {
+          renderAll();
+          setStatus('Books reordered locally via drag and drop.', false);
+        }
+      });
+
+      bookCardsEl.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) {
+          return;
+        }
+
+        const deleteId = target.getAttribute('data-delete-book-id');
+        if (deleteId) {
+          openDeleteModal(deleteId);
+          return;
+        }
+
+        const editId = target.getAttribute('data-edit-book-id');
+        if (editId) {
+          openEditModal(editId);
+        }
       });
 
       confirmDeleteBtnEl.addEventListener('click', async () => {
-        if (!pendingDeleteBookId) {
+        if (!state.pendingDeleteBookId) {
           closeDeleteModal();
           return;
         }
-        const deletingId = pendingDeleteBookId;
+        const deletingId = state.pendingDeleteBookId;
         closeDeleteModal();
+
         try {
           await fetchJson('/api/books/' + deletingId, { method: 'DELETE' });
+          delete state.addedById[String(deletingId)];
+          writeAddedStore();
           setStatus('Book deleted.', false);
           await loadAll();
         } catch (err) {
@@ -698,146 +1183,19 @@ export class AppController {
       });
 
       deleteModalEl.addEventListener('click', (event) => {
-        const target = event.target;
-        if (!(target instanceof HTMLElement)) {
-          return;
-        }
-        if (target === deleteModalEl) {
+        if (event.target === deleteModalEl) {
           closeDeleteModal();
           setStatus('Delete canceled.', false);
         }
       });
 
-      booksEl.addEventListener('dragstart', (event) => {
-        const target = event.target;
-        if (!(target instanceof HTMLElement)) {
-          return;
-        }
-        const item = target.closest('[data-book-id]');
-        if (!(item instanceof HTMLElement)) {
-          return;
-        }
-        draggingBookId = item.getAttribute('data-book-id');
-        item.classList.add('dragging');
-        if (event.dataTransfer) {
-          event.dataTransfer.effectAllowed = 'move';
-        }
-      });
-
-      booksEl.addEventListener('dragend', (event) => {
-        const target = event.target;
-        if (target instanceof HTMLElement) {
-          target.classList.remove('dragging');
-        }
-        draggingBookId = null;
-        clearDropTargets(booksEl);
-      });
-
-      booksEl.addEventListener('dragover', (event) => {
+      editBookFormEl.addEventListener('submit', async (event) => {
         event.preventDefault();
-        const target = event.target;
-        if (!(target instanceof HTMLElement)) {
+        if (!state.editingBook) {
           return;
         }
-        const item = target.closest('[data-book-id]');
-        if (!(item instanceof HTMLElement)) {
-          clearDropTargets(booksEl);
-          return;
-        }
-        clearDropTargets(booksEl);
-        item.classList.add('drop-target');
-      });
 
-      booksEl.addEventListener('drop', (event) => {
-        event.preventDefault();
-        const target = event.target;
-        if (!(target instanceof HTMLElement) || !draggingBookId) {
-          return;
-        }
-        const item = target.closest('[data-book-id]');
-        if (!(item instanceof HTMLElement)) {
-          clearDropTargets(booksEl);
-          return;
-        }
-        const toId = item.getAttribute('data-book-id');
-        if (!toId) {
-          return;
-        }
-        const changed = reorderById(state.books, draggingBookId, toId);
-        clearDropTargets(booksEl);
-        if (changed) {
-          renderBooks();
-          setStatus('Books reordered locally via drag and drop.', false);
-        }
-      });
-
-      authorsEl.addEventListener('dragstart', (event) => {
-        const target = event.target;
-        if (!(target instanceof HTMLElement)) {
-          return;
-        }
-        const item = target.closest('[data-author-id]');
-        if (!(item instanceof HTMLElement)) {
-          return;
-        }
-        draggingAuthorId = item.getAttribute('data-author-id');
-        item.classList.add('dragging');
-        if (event.dataTransfer) {
-          event.dataTransfer.effectAllowed = 'move';
-        }
-      });
-
-      authorsEl.addEventListener('dragend', (event) => {
-        const target = event.target;
-        if (target instanceof HTMLElement) {
-          target.classList.remove('dragging');
-        }
-        draggingAuthorId = null;
-        clearDropTargets(authorsEl);
-      });
-
-      authorsEl.addEventListener('dragover', (event) => {
-        event.preventDefault();
-        const target = event.target;
-        if (!(target instanceof HTMLElement)) {
-          return;
-        }
-        const item = target.closest('[data-author-id]');
-        if (!(item instanceof HTMLElement)) {
-          clearDropTargets(authorsEl);
-          return;
-        }
-        clearDropTargets(authorsEl);
-        item.classList.add('drop-target');
-      });
-
-      authorsEl.addEventListener('drop', (event) => {
-        event.preventDefault();
-        const target = event.target;
-        if (!(target instanceof HTMLElement) || !draggingAuthorId) {
-          return;
-        }
-        const item = target.closest('[data-author-id]');
-        if (!(item instanceof HTMLElement)) {
-          clearDropTargets(authorsEl);
-          return;
-        }
-        const toId = item.getAttribute('data-author-id');
-        if (!toId) {
-          return;
-        }
-        const changed = reorderById(state.authors, draggingAuthorId, toId);
-        clearDropTargets(authorsEl);
-        if (changed) {
-          renderAuthors();
-          setStatus('Authors reordered locally via drag and drop.', false);
-        }
-      });
-
-      bookFormEl.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        const formData = new FormData(bookFormEl);
-
+        const formData = new FormData(editBookFormEl);
         const payload = {
           title: String(formData.get('title') || '').trim(),
           author: String(formData.get('author') || '').trim(),
@@ -847,11 +1205,52 @@ export class AppController {
         };
 
         try {
-          await fetchJson('/api/books', {
+          await fetchJson('/api/books/' + state.editingBook.id, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          closeEditModal();
+          setStatus('Book updated.', false);
+          await loadAll();
+        } catch (err) {
+          setStatus('Edit failed: ' + err.message, true);
+        }
+      });
+
+      cancelEditBtnEl.addEventListener('click', () => {
+        closeEditModal();
+        setStatus('Edit canceled.', false);
+      });
+
+      editModalEl.addEventListener('click', (event) => {
+        if (event.target === editModalEl) {
+          closeEditModal();
+          setStatus('Edit canceled.', false);
+        }
+      });
+
+      bookFormEl.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(bookFormEl);
+        const payload = {
+          title: String(formData.get('title') || '').trim(),
+          author: String(formData.get('author') || '').trim(),
+          isbn: String(formData.get('isbn') || '').trim(),
+          publishedYear: Number(formData.get('publishedYear')),
+          genre: String(formData.get('genre') || '').trim() || undefined,
+        };
+
+        try {
+          const created = await fetchJson('/api/books', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
           });
+          if (created && created.id !== undefined) {
+            state.addedById[String(created.id)] = todayKey();
+            writeAddedStore();
+          }
           bookFormEl.reset();
           setStatus('Book added.', false);
           await loadAll();
@@ -863,7 +1262,6 @@ export class AppController {
       authorFormEl.addEventListener('submit', async (event) => {
         event.preventDefault();
         const formData = new FormData(authorFormEl);
-
         const birthYearRaw = String(formData.get('birthYear') || '').trim();
         const payload = {
           name: String(formData.get('name') || '').trim(),
@@ -885,10 +1283,41 @@ export class AppController {
         }
       });
 
-      filterAuthorEl.addEventListener('input', renderBooks);
-      filterGenreEl.addEventListener('input', renderBooks);
+      searchBookEl.addEventListener('input', renderAll);
+      filterAuthorEl.addEventListener('input', renderAll);
+      filterGenreEl.addEventListener('input', renderAll);
       refreshBtnEl.addEventListener('click', loadAll);
 
+      generateRandomBtnEl.addEventListener('click', async () => {
+        const answer = prompt('How many random books should I generate?', '3');
+        if (answer === null) {
+          setStatus('Random generation canceled.', false);
+          return;
+        }
+
+        const requestedCount = Number.parseInt(answer.trim(), 10);
+        if (!Number.isInteger(requestedCount) || requestedCount <= 0 || requestedCount > 100) {
+          setStatus('Please enter a whole number between 1 and 100.', true);
+          return;
+        }
+
+        const roundedCount = Math.min(100, Math.ceil(Math.max(10, requestedCount) / 10) * 10);
+
+        try {
+          if (roundedCount !== requestedCount) {
+            setStatus('Using ' + roundedCount + ' entries (rounded to a multiple of 10 for better chart data).', false);
+          } else {
+            setStatus('Generating ' + roundedCount + ' random books...', false);
+          }
+          await generateRandomBooks(roundedCount);
+          await loadAll();
+          setStatus('Added ' + roundedCount + ' random books with randomized author, year, category, and added date.', false);
+        } catch (err) {
+          setStatus('Random generation failed: ' + err.message, true);
+        }
+      });
+
+      state.addedById = readAddedStore();
       loadAll();
     </script>
   </body>
