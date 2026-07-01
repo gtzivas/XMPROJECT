@@ -25,7 +25,8 @@ export class AppController {
         --warning: #f59e0b;
         --danger: #ef4444;
         --shadow: 0 14px 30px rgba(18, 30, 60, 0.08);
-        --radius: 14px;
+        --radius: 0px;
+        --heading-font: "Avenir Next", "Helvetica Neue", "Segoe UI", sans-serif;
       }
 
       * {
@@ -69,7 +70,7 @@ export class AppController {
 
       .side-link {
         padding: 10px 10px;
-        border-radius: 10px;
+        border-radius: 0;
         margin-bottom: 5px;
         background: transparent;
       }
@@ -92,7 +93,7 @@ export class AppController {
       .search {
         background: var(--surface);
         border: 1px solid var(--line);
-        border-radius: 12px;
+        border-radius: 0;
         height: 42px;
         padding: 0 12px;
         font-size: 13px;
@@ -110,7 +111,7 @@ export class AppController {
         align-items: center;
         justify-content: center;
         border: 1px solid var(--line);
-        border-radius: 12px;
+        border-radius: 0;
         background: var(--surface);
       }
 
@@ -126,6 +127,8 @@ export class AppController {
       .hero h1 {
         margin: 0;
         font-size: 34px;
+        font-family: var(--heading-font);
+        font-weight: 600;
       }
 
       .hero p {
@@ -160,6 +163,7 @@ export class AppController {
         margin-top: 6px;
         font-size: 24px;
         font-weight: 800;
+        font-family: var(--heading-font);
       }
 
       .layout {
@@ -186,7 +190,8 @@ export class AppController {
 
       .panel-title {
         font-size: 17px;
-        font-weight: 800;
+        font-family: var(--heading-font);
+        font-weight: 600;
       }
 
       .toolbar {
@@ -203,7 +208,7 @@ export class AppController {
       .form select {
         height: 34px;
         border: 1px solid var(--line);
-        border-radius: 10px;
+        border-radius: 0;
         font-size: 12px;
         padding: 0 10px;
       }
@@ -228,12 +233,19 @@ export class AppController {
         display: grid;
         grid-template-columns: repeat(2, minmax(250px, 1fr));
         gap: 10px;
+        align-content: start;
+      }
+
+      .books-viewport {
+        min-height: 420px;
+        max-height: 420px;
+        overflow: hidden;
       }
 
       .book-card {
         background: var(--surface-2);
         border: 1px solid var(--line);
-        border-radius: 12px;
+        border-radius: 0;
         padding: 10px;
       }
 
@@ -263,7 +275,8 @@ export class AppController {
 
       .book-name {
         font-size: 15px;
-        font-weight: 800;
+        font-family: var(--heading-font);
+        font-weight: 600;
       }
 
       .book-meta {
@@ -283,7 +296,7 @@ export class AppController {
         display: inline-flex;
         align-items: center;
         padding: 4px 8px;
-        border-radius: 999px;
+        border-radius: 0;
         font-size: 10px;
         font-weight: 700;
         background: #e8eefb;
@@ -302,7 +315,7 @@ export class AppController {
 
       .btn-sm {
         height: 28px;
-        border-radius: 9px;
+        border-radius: 0;
         border: 1px solid var(--line);
         background: #fff;
         padding: 0 9px;
@@ -362,6 +375,38 @@ export class AppController {
         gap: 10px;
       }
 
+      .pagination {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 6px;
+      }
+
+      .pagination button {
+        height: 30px;
+        min-width: 74px;
+        border-radius: 0;
+        border: 1px solid var(--line);
+        background: #fff;
+        color: var(--ink);
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .pagination button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .pagination-info {
+        font-size: 12px;
+        color: var(--muted);
+        min-width: 110px;
+        text-align: center;
+      }
+
       .chart {
         display: flex;
         align-items: flex-end;
@@ -381,7 +426,7 @@ export class AppController {
         width: 100%;
         max-width: 42px;
         background: linear-gradient(180deg, #5da0ff 0%, #1f7ae0 100%);
-        border-radius: 8px 8px 4px 4px;
+        border-radius: 0;
       }
 
       .bar-date {
@@ -423,7 +468,7 @@ export class AppController {
         width: min(460px, 100%);
         background: #fff;
         border: 1px solid var(--line);
-        border-radius: 14px;
+        border-radius: 0;
         box-shadow: var(--shadow);
         padding: 14px;
       }
@@ -448,7 +493,7 @@ export class AppController {
       .btn-secondary,
       .btn-danger {
         height: 32px;
-        border-radius: 10px;
+        border-radius: 0;
         padding: 0 12px;
         font-size: 12px;
         font-weight: 700;
@@ -565,7 +610,14 @@ export class AppController {
               <button id="generate-random-btn" type="button">Generate Random</button>
             </div>
 
-            <div id="book-cards" class="books-grid"></div>
+            <div class="books-viewport">
+              <div id="book-cards" class="books-grid"></div>
+            </div>
+            <div class="pagination">
+              <button id="books-prev-btn" type="button">Previous</button>
+              <div id="books-page-info" class="pagination-info">Page 1 / 1</div>
+              <button id="books-next-btn" type="button">Next</button>
+            </div>
           </article>
 
           <section class="side-stack">
@@ -665,6 +717,8 @@ export class AppController {
         editingBook: null,
         addedById: {},
         draggingBookId: null,
+        currentPage: 1,
+        pageSize: 14,
       };
 
       const storageKey = 'book-library-added-by-id';
@@ -686,6 +740,9 @@ export class AppController {
       const statusEl = document.getElementById('status');
       const bookFormEl = document.getElementById('book-form');
       const authorFormEl = document.getElementById('author-form');
+      const booksPrevBtnEl = document.getElementById('books-prev-btn');
+      const booksNextBtnEl = document.getElementById('books-next-btn');
+      const booksPageInfoEl = document.getElementById('books-page-info');
 
       const deleteModalEl = document.getElementById('delete-modal');
       const confirmDeleteBtnEl = document.getElementById('confirm-delete-btn');
@@ -823,12 +880,23 @@ export class AppController {
       }
 
       function renderBookCards(filteredBooks) {
+        const totalPages = Math.max(1, Math.ceil(filteredBooks.length / state.pageSize));
+        if (state.currentPage > totalPages) {
+          state.currentPage = totalPages;
+        }
+        const startIndex = (state.currentPage - 1) * state.pageSize;
+        const pageBooks = filteredBooks.slice(startIndex, startIndex + state.pageSize);
+
+        booksPageInfoEl.textContent = 'Page ' + state.currentPage + ' / ' + totalPages;
+        booksPrevBtnEl.disabled = state.currentPage <= 1;
+        booksNextBtnEl.disabled = state.currentPage >= totalPages;
+
         if (filteredBooks.length === 0) {
           bookCardsEl.innerHTML = '<article class="book-card">No books match the current filters.</article>';
           return;
         }
 
-        bookCardsEl.innerHTML = filteredBooks
+        bookCardsEl.innerHTML = pageBooks
           .map((book) => {
             const addedDate = state.addedById[String(book.id)] || todayKey();
             return (
@@ -970,9 +1038,19 @@ export class AppController {
       async function loadAll() {
         try {
           setStatus('Loading dashboard data...', false);
-          const [books, authors] = await Promise.all([fetchJson('/api/books'), fetchJson('/api/authors')]);
+          let [books, authors] = await Promise.all([fetchJson('/api/books'), fetchJson('/api/authors')]);
           state.books = Array.isArray(books) ? books : [];
           state.authors = Array.isArray(authors) ? authors : [];
+
+          if (state.books.length === 0 && state.authors.length === 0) {
+            setStatus('Seeding initial dashboard demo data...', false);
+            await generateRandomBooks(40);
+            [books, authors] = await Promise.all([fetchJson('/api/books'), fetchJson('/api/authors')]);
+            state.books = Array.isArray(books) ? books : [];
+            state.authors = Array.isArray(authors) ? authors : [];
+            state.currentPage = 1;
+          }
+
           ensureAddedDates();
           renderAll();
           setStatus('Dashboard synced.', false);
@@ -1283,35 +1361,53 @@ export class AppController {
         }
       });
 
-      searchBookEl.addEventListener('input', renderAll);
-      filterAuthorEl.addEventListener('input', renderAll);
-      filterGenreEl.addEventListener('input', renderAll);
+      searchBookEl.addEventListener('input', () => {
+        state.currentPage = 1;
+        renderAll();
+      });
+      filterAuthorEl.addEventListener('input', () => {
+        state.currentPage = 1;
+        renderAll();
+      });
+      filterGenreEl.addEventListener('input', () => {
+        state.currentPage = 1;
+        renderAll();
+      });
+
+      booksPrevBtnEl.addEventListener('click', () => {
+        if (state.currentPage > 1) {
+          state.currentPage -= 1;
+          renderAll();
+        }
+      });
+
+      booksNextBtnEl.addEventListener('click', () => {
+        state.currentPage += 1;
+        renderAll();
+      });
+
       refreshBtnEl.addEventListener('click', loadAll);
 
       generateRandomBtnEl.addEventListener('click', async () => {
-        const answer = prompt('How many random books should I generate?', '3');
+        const answer = prompt('How many random sets should I generate? (5 = 50 books)', '5');
         if (answer === null) {
           setStatus('Random generation canceled.', false);
           return;
         }
 
-        const requestedCount = Number.parseInt(answer.trim(), 10);
-        if (!Number.isInteger(requestedCount) || requestedCount <= 0 || requestedCount > 100) {
-          setStatus('Please enter a whole number between 1 and 100.', true);
+        const multiplier = Number.parseInt(answer.trim(), 10);
+        if (!Number.isInteger(multiplier) || multiplier <= 0 || multiplier > 20) {
+          setStatus('Please enter a whole number multiplier between 1 and 20.', true);
           return;
         }
 
-        const roundedCount = Math.min(100, Math.ceil(Math.max(10, requestedCount) / 10) * 10);
+        const totalCount = multiplier * 10;
 
         try {
-          if (roundedCount !== requestedCount) {
-            setStatus('Using ' + roundedCount + ' entries (rounded to a multiple of 10 for better chart data).', false);
-          } else {
-            setStatus('Generating ' + roundedCount + ' random books...', false);
-          }
-          await generateRandomBooks(roundedCount);
+          setStatus('Generating ' + totalCount + ' random books...', false);
+          await generateRandomBooks(totalCount);
           await loadAll();
-          setStatus('Added ' + roundedCount + ' random books with randomized author, year, category, and added date.', false);
+          setStatus('Added ' + totalCount + ' random books with randomized author, year, category, and added date.', false);
         } catch (err) {
           setStatus('Random generation failed: ' + err.message, true);
         }
