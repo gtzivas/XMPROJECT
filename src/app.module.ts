@@ -10,8 +10,8 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: ':memory:',
+      type: 'sqljs',
+      autoSave: false,
       entities: [BookEntity, AuthorEntity],
       synchronize: true,
     }),

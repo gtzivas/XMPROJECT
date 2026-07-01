@@ -13,8 +13,8 @@ async function createApp(): Promise<INestApplication> {
   const moduleRef = await Test.createTestingModule({
     imports: [
       TypeOrmModule.forRoot({
-        type: 'sqlite',
-        database: ':memory:',
+        type: 'sqljs',
+        autoSave: false,
         entities: [BookEntity, AuthorEntity],
         synchronize: true,
         dropSchema: true,
