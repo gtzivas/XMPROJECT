@@ -6,8 +6,10 @@ import { AuthorsModule } from './authors/authors.module';
 import { BookEntity } from './books/entities/book.entity';
 import { AuthorEntity } from './authors/entities/author.entity';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { AppController } from './app.controller';
 
 @Module({
+  controllers: [AppController],
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqljs',
