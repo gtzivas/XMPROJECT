@@ -171,6 +171,7 @@ export class AppController {
         display: grid;
         grid-template-columns: 1.45fr 0.7fr;
         gap: 10px;
+        align-items: start;
       }
 
       .panel {
@@ -232,13 +233,14 @@ export class AppController {
       .books-grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(250px, 1fr));
+        grid-auto-rows: 76px;
         gap: 10px;
         align-content: start;
       }
 
       .books-viewport {
-        min-height: 420px;
-        max-height: 420px;
+        min-height: 592px;
+        max-height: 592px;
         overflow: hidden;
       }
 
@@ -246,7 +248,12 @@ export class AppController {
         background: var(--surface-2);
         border: 1px solid var(--line);
         border-radius: 0;
-        padding: 10px;
+        height: 76px;
+        padding: 8px 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow: hidden;
       }
 
       .book-card.draggable {
@@ -274,33 +281,37 @@ export class AppController {
       }
 
       .book-name {
-        font-size: 15px;
+        font-size: 13px;
         font-family: var(--heading-font);
         font-weight: 600;
+        line-height: 1.1;
       }
 
       .book-meta {
         color: var(--muted);
-        font-size: 12px;
-        margin-top: 2px;
+        font-size: 11px;
+        margin-top: 1px;
       }
 
       .book-tags {
         display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        margin-top: 8px;
+        flex-wrap: nowrap;
+        gap: 4px;
+        margin-top: 4px;
+        overflow: hidden;
       }
 
       .tag {
         display: inline-flex;
         align-items: center;
-        padding: 4px 8px;
+        padding: 3px 6px;
         border-radius: 0;
-        font-size: 10px;
+        font-size: 9px;
+        line-height: 1;
         font-weight: 700;
         background: #e8eefb;
         color: #355088;
+        white-space: nowrap;
       }
 
       .tag.genre {
@@ -314,12 +325,12 @@ export class AppController {
       }
 
       .btn-sm {
-        height: 28px;
+        height: 24px;
         border-radius: 0;
         border: 1px solid var(--line);
         background: #fff;
-        padding: 0 9px;
-        font-size: 11px;
+        padding: 0 7px;
+        font-size: 10px;
         font-weight: 700;
         cursor: pointer;
       }
@@ -349,27 +360,36 @@ export class AppController {
       }
 
       .popular-list,
-      .recent-list {
+      .recent-list,
+      .genre-list {
         list-style: none;
         margin: 0;
         padding: 0;
       }
 
       .popular-item,
-      .recent-item {
+      .recent-item,
+      .genre-item {
         border-top: 1px solid var(--line);
         padding: 8px 0;
         font-size: 12px;
       }
 
       .popular-item:first-child,
-      .recent-item:first-child {
+      .recent-item:first-child,
+      .genre-item:first-child {
         border-top: 0;
         padding-top: 0;
       }
 
       .lower {
         margin-top: 10px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .lower-left {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 10px;
@@ -410,8 +430,10 @@ export class AppController {
       .chart {
         display: flex;
         align-items: flex-end;
-        gap: 10px;
-        min-height: 180px;
+        justify-content: space-between;
+        gap: 14px;
+        min-height: 230px;
+        padding: 8px 6px 2px;
       }
 
       .bar-wrap {
@@ -419,12 +441,11 @@ export class AppController {
         flex-direction: column;
         align-items: center;
         gap: 6px;
-        width: 100%;
+        flex: 1 1 0;
       }
 
       .bar {
-        width: 100%;
-        max-width: 42px;
+        width: min(56px, 100%);
         background: linear-gradient(180deg, #5da0ff 0%, #1f7ae0 100%);
         border-radius: 0;
       }
@@ -528,12 +549,26 @@ export class AppController {
           grid-template-columns: 1fr;
         }
 
+        .lower-left {
+          grid-template-columns: 1fr;
+        }
+
+        .books-viewport {
+          min-height: auto;
+          max-height: none;
+        }
+
         .quick-cards {
           grid-template-columns: repeat(2, minmax(110px, 1fr));
         }
 
         .books-grid {
           grid-template-columns: 1fr;
+          grid-auto-rows: auto;
+        }
+
+        .book-card {
+          height: auto;
         }
       }
 
@@ -659,12 +694,21 @@ export class AppController {
         </section>
 
         <section class="lower">
-          <article class="panel">
-            <div class="panel-head">
-              <div class="panel-title">Recent Books</div>
-            </div>
-            <ul id="recent-books" class="recent-list"></ul>
-          </article>
+          <div class="lower-left">
+            <article class="panel">
+              <div class="panel-head">
+                <div class="panel-title">Recent Books</div>
+              </div>
+              <ul id="recent-books" class="recent-list"></ul>
+            </article>
+
+            <article class="panel">
+              <div class="panel-head">
+                <div class="panel-title">Genres</div>
+              </div>
+              <ul id="genre-breakdown" class="genre-list"></ul>
+            </article>
+          </div>
 
           <article class="panel">
             <div class="panel-head">
@@ -718,6 +762,7 @@ export class AppController {
         addedById: {},
         draggingBookId: null,
         currentPage: 1,
+        // 7 visual rows x 2 columns in desktop layout.
         pageSize: 14,
       };
 
@@ -731,6 +776,7 @@ export class AppController {
       const bookCardsEl = document.getElementById('book-cards');
       const popularAuthorsEl = document.getElementById('popular-authors');
       const recentBooksEl = document.getElementById('recent-books');
+      const genreBreakdownEl = document.getElementById('genre-breakdown');
       const addedChartEl = document.getElementById('added-chart');
       const booksCountLabelEl = document.getElementById('books-count-label');
       const metricBooksEl = document.getElementById('metric-books');
@@ -972,6 +1018,26 @@ export class AppController {
           .join('');
       }
 
+      function renderGenreBreakdown() {
+        const counter = {};
+        for (const book of state.books) {
+          const key = String(book.genre || 'Uncategorized').trim() || 'Uncategorized';
+          counter[key] = (counter[key] || 0) + 1;
+        }
+
+        const ranked = Object.entries(counter).sort((a, b) => b[1] - a[1]);
+
+        if (ranked.length === 0) {
+          genreBreakdownEl.innerHTML = '<li class="genre-item">No genre data yet.</li>';
+          return;
+        }
+
+        genreBreakdownEl.innerHTML = ranked
+          .slice(0, 8)
+          .map(([genre, count]) => '<li class="genre-item"><strong>' + esc(genre) + '</strong> · ' + esc(count) + ' books</li>')
+          .join('');
+      }
+
       function renderAdditionChart() {
         const counts = {};
         const now = new Date();
@@ -996,7 +1062,7 @@ export class AppController {
         addedChartEl.innerHTML = labels
           .map((key) => {
             const value = counts[key];
-            const height = Math.max(10, Math.round((value / maxCount) * 130));
+            const height = Math.max(28, Math.round((value / maxCount) * 185));
             return (
               '<div class="bar-wrap">' +
               '<div class="bar-value">' + value + '</div>' +
@@ -1014,6 +1080,7 @@ export class AppController {
         renderBookCards(filtered);
         renderRecentBooks();
         renderPopularAuthors();
+        renderGenreBreakdown();
         renderAdditionChart();
       }
 
@@ -1102,12 +1169,12 @@ export class AppController {
         const existingAuthors = state.authors.map((author) => author.name).filter(Boolean);
         const pool = Array.from(new Set([...existingAuthors, ...randomAuthorPool]));
 
-        const daysWindow = 10;
+        const weightedDayOffsets = [0, 0, 0, 1, 1, 2, 2, 3, 4, 5, 6, 7, 8, 9];
         const spreadDates = [];
         for (let i = 0; i < count; i += 1) {
-          spreadDates.push(dateDaysAgo(i % daysWindow));
+          // Weighted distribution creates varied chart bars while keeping recent activity higher.
+          spreadDates.push(dateDaysAgo(randomFrom(weightedDayOffsets)));
         }
-        spreadDates.sort(() => Math.random() - 0.5);
 
         for (let i = 0; i < count; i += 1) {
           const chosenAuthor = randomFrom(pool);
